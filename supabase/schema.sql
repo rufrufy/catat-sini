@@ -115,8 +115,14 @@ alter table public.ai_extraction_logs enable row level security;
 
 drop policy if exists "profiles own rows" on public.profiles;
 drop policy if exists "wallets visible to members" on public.wallets;
-drop policy if exists "wallet members visible to members" on public.wallet_members;
-drop policy if exists "wallet invites visible to related users" on public.wallet_invites;
+drop policy if exists "wallet members select" on public.wallet_members;
+drop policy if exists "wallet members insert" on public.wallet_members;
+drop policy if exists "wallet members update" on public.wallet_members;
+drop policy if exists "wallet members delete" on public.wallet_members;
+drop policy if exists "wallet invites select" on public.wallet_invites;
+drop policy if exists "wallet invites insert" on public.wallet_invites;
+drop policy if exists "wallet invites update" on public.wallet_invites;
+drop policy if exists "wallet invites delete" on public.wallet_invites;
 drop policy if exists "accounts own rows" on public.accounts;
 drop policy if exists "categories own rows" on public.categories;
 drop policy if exists "transactions own rows" on public.transactions;
@@ -149,14 +155,50 @@ with check (
   )
 );
 
-create policy "wallet members visible to members"
-on public.wallet_members for all
+create policy "wallet members select"
+on public.wallet_members for select
 using (
   exists (
     select 1
     from public.wallet_members wm
     where wm.wallet_id = wallet_members.wallet_id
       and wm.user_id = auth.uid()
+  )
+);
+
+create policy "wallet members insert"
+on public.wallet_members for insert
+with check (
+  (
+    auth.uid() = user_id
+    and role = 'owner'
+    and invited_by_user_id = auth.uid()
+    and exists (
+      select 1
+      from public.wallets w
+      where w.id = wallet_members.wallet_id
+        and w.owner_user_id = auth.uid()
+    )
+  )
+  or
+  exists (
+    select 1
+    from public.wallet_members wm
+    where wm.wallet_id = wallet_members.wallet_id
+      and wm.user_id = auth.uid()
+      and wm.role = 'owner'
+  )
+);
+
+create policy "wallet members update"
+on public.wallet_members for update
+using (
+  exists (
+    select 1
+    from public.wallet_members wm
+    where wm.wallet_id = wallet_members.wallet_id
+      and wm.user_id = auth.uid()
+      and wm.role = 'owner'
   )
 )
 with check (
@@ -169,13 +211,45 @@ with check (
   )
 );
 
-create policy "wallet invites visible to related users"
-on public.wallet_invites for all
+create policy "wallet members delete"
+on public.wallet_members for delete
+using (
+  exists (
+    select 1
+    from public.wallet_members wm
+    where wm.wallet_id = wallet_members.wallet_id
+      and wm.user_id = auth.uid()
+      and wm.role = 'owner'
+  )
+);
+
+create policy "wallet invites select"
+on public.wallet_invites for select
+using (
+  invited_by_user_id = auth.uid()
+  or lower(invited_email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
+
+create policy "wallet invites insert"
+on public.wallet_invites for insert
+with check (
+  invited_by_user_id = auth.uid()
+);
+
+create policy "wallet invites update"
+on public.wallet_invites for update
 using (
   invited_by_user_id = auth.uid()
   or lower(invited_email) = lower(coalesce(auth.jwt() ->> 'email', ''))
 )
 with check (
+  invited_by_user_id = auth.uid()
+  or lower(invited_email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
+
+create policy "wallet invites delete"
+on public.wallet_invites for delete
+using (
   invited_by_user_id = auth.uid()
 );
 

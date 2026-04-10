@@ -7,12 +7,12 @@ import { requireUser } from "@/lib/supabase/server";
 
 export default async function AddTransactionPage() {
   const user = await requireUser();
-  const { categories, accounts, isDemo } = await getSelectOptions(user);
+  const { wallets, categories, accounts, isDemo } = await getSelectOptions(user);
 
   return (
     <MobileShell activeTab="add" userLabel={user.email}>
       <DemoBadge show={isDemo} />
-      <TransactionComposer accounts={accounts} aiReady={hasAiEnv()} categories={categories} isDemo={isDemo} />
+      <TransactionComposer accounts={accounts} aiReady={hasAiEnv()} categories={categories} isDemo={isDemo} wallets={wallets} />
     </MobileShell>
   );
 }

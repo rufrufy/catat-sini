@@ -1,12 +1,14 @@
 import { MobileShell } from "@/components/mobile-shell";
+import { WalletManager } from "@/components/wallet-manager";
 import { signOutAction } from "@/lib/actions";
-import { getDashboardSnapshot } from "@/lib/db";
+import { getDashboardSnapshot, getWalletOverview } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
 import { requireUser } from "@/lib/supabase/server";
 
 export default async function AccountPage() {
   const user = await requireUser();
   const { data } = await getDashboardSnapshot(user);
+  const walletData = await getWalletOverview(user);
 
   return (
     <MobileShell activeTab="account" userLabel={user.email}>
@@ -42,6 +44,13 @@ export default async function AccountPage() {
           <p>Struktur aman untuk deploy ke Vercel sebagai satu aplikasi.</p>
         </div>
       </section>
+
+      <WalletManager
+        isDemo={walletData.isDemo}
+        outgoingInvites={walletData.outgoingInvites}
+        pendingInvites={walletData.pendingInvites}
+        wallets={walletData.wallets}
+      />
 
       <form action={signOutAction}>
         <button className="flex h-14 w-full items-center justify-center rounded-2xl bg-on-surface text-lg font-semibold text-white" type="submit">

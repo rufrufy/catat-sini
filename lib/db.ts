@@ -54,10 +54,10 @@ type WalletInviteRow = {
   id: string;
   wallet_id: string;
   invited_email: string;
+  invited_by_user_id: string;
   role: "member" | "viewer";
   status: "pending" | "accepted" | "declined";
   wallets?: { name: string } | Array<{ name: string }> | null;
-  profiles?: { email: string | null; full_name: string | null } | Array<{ email: string | null; full_name: string | null }> | null;
 };
 
 const defaultWallet = {
@@ -275,12 +275,12 @@ export async function getWalletOverview(user: UserLike): Promise<{
       supabase.from("wallet_members").select("wallet_id, role, wallets(id, name, description)").eq("user_id", user.id),
       supabase
         .from("wallet_invites")
-        .select("id, wallet_id, invited_email, role, status, wallets(name), profiles(email, full_name)")
+        .select("id, wallet_id, invited_email, invited_by_user_id, role, status, wallets(name)")
         .eq("invited_email", user.email.toLowerCase())
         .eq("status", "pending"),
       supabase
         .from("wallet_invites")
-        .select("id, wallet_id, invited_email, role, status, wallets(name), profiles(email, full_name)")
+        .select("id, wallet_id, invited_email, invited_by_user_id, role, status, wallets(name)")
         .eq("invited_by_user_id", user.id)
         .order("created_at", { ascending: false })
     ]);
@@ -329,9 +329,15 @@ export async function getWalletOverview(user: UserLike): Promise<{
     })
     .filter((wallet): wallet is WalletSummary => Boolean(wallet));
 
+  const inviterIds = [...new Set([...(incomingRows ?? []), ...(outgoingRows ?? [])].map((row) => row.invited_by_user_id))];
+  const { data: profileRows } = inviterIds.length
+    ? await supabase.from("profiles").select("id, email, full_name").in("id", inviterIds)
+    : { data: [] as Array<{ id: string; email: string | null; full_name: string | null }> };
+  const profileMap = new Map(profileRows?.map((profile) => [profile.id, profile]) ?? []);
+
   const mapInvite = (row: WalletInviteRow): WalletInvite => {
     const wallet = normalizeRelation(row.wallets);
-    const inviter = normalizeRelation(row.profiles);
+    const inviter = profileMap.get(row.invited_by_user_id);
     return {
       id: row.id,
       walletId: row.wallet_id,
