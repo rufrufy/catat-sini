@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#3d4947",
+                    "inverse-on-surface": "#eaf1ff",
+                    "primary-container": "#008378",
+                    "on-secondary-fixed-variant": "#274d48",
+                    "surface-container": "#e5eeff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#0b1c30",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "surface": "#f8f9ff",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "primary": "#00685f",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#cbdbf5",
+                    "inverse-primary": "#6bd8cb",
+                    "secondary": "#3f6560",
+                    "on-tertiary-fixed": "#370e00",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-secondary-container": "#456b66",
+                    "secondary-fixed-dim": "#a6cfc8",
+                    "on-primary-fixed": "#00201d",
+                    "on-surface": "#0b1c30",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-fixed-variant": "#005049",
+                    "surface-tint": "#006a61",
+                    "secondary-fixed": "#c2ebe3",
+                    "tertiary-fixed": "#ffdbce",
+                    "secondary-container": "#c2ebe3",
+                    "tertiary": "#924628",
+                    "surface-container-highest": "#d3e4fe",
+                    "inverse-surface": "#213145",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "tertiary-container": "#b05e3d",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#bcc9c6",
+                    "on-primary-container": "#f4fffc",
+                    "on-secondary-fixed": "#00201d",
+                    "surface-container-high": "#dce9ff",
+                    "surface-container-low": "#eff4ff",
+                    "primary-fixed": "#89f5e7",
+                    "on-tertiary": "#ffffff",
+                    "surface-variant": "#d3e4fe",
+                    "outline": "#6d7a77",
+                    "error-container": "#ffdad6",
+                    "background": "#f8f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .text-balance {
+            text-wrap: balance;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Navbar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20">
+<div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<span class="text-lg font-extrabold text-primary font-headline tracking-tight">Ethereal Vault</span>
+</div>
+<a class="text-sm font-semibold text-primary hover:text-primary-container transition-colors" href="#">Sign In</a>
+</div>
+</header>
+<main class="pt-32 pb-24">
+<!-- Hero Section -->
+<section class="max-w-4xl mx-auto px-6 text-center mb-24">
+<div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-[10px] font-bold uppercase tracking-widest font-label">The Future of Money</span>
+</div>
+<h1 class="text-4xl md:text-6xl font-extrabold font-headline text-on-surface leading-tight tracking-tight mb-6 text-balance">
+                Master Your Wealth with <span class="text-primary italic">AI Intelligence</span>
+</h1>
+<p class="text-on-surface-variant text-lg md:text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
+                Track, analyze, and grow your finances with a calm, automated interface. Financial clarity has never been this ethereal.
+            </p>
+<div class="flex justify-center">
+<button class="w-full sm:w-auto bg-primary text-on-primary py-4 px-10 rounded-lg font-bold text-lg shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 transition-all active:scale-[0.98]">
+                    Get Started
+                </button>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="bg-surface-container-low py-20">
+<div class="max-w-5xl mx-auto px-6">
+<div class="text-center mb-16">
+<h2 class="text-3xl font-bold font-headline mb-4">How it works</h2>
+<p class="text-on-surface-variant">Simple automation for your financial life.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl text-center shadow-sm border border-outline-variant/10">
+<div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+<span class="material-symbols-outlined">photo_camera</span>
+</div>
+<h3 class="font-bold font-headline text-lg mb-2">Scan</h3>
+<p class="text-sm text-on-surface-variant">Capture receipts, voice notes, or link accounts instantly.</p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl text-center shadow-sm border border-outline-variant/10">
+<div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<h3 class="font-bold font-headline text-lg mb-2">AI Analyzes</h3>
+<p class="text-sm text-on-surface-variant">Our smart engine categorizes and identifies saving opportunities.</p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl text-center shadow-sm border border-outline-variant/10">
+<div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+<span class="material-symbols-outlined">savings</span>
+</div>
+<h3 class="font-bold font-headline text-lg mb-2">Save</h3>
+<p class="text-sm text-on-surface-variant">Watch your net worth grow with personalized daily insights.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="py-12 px-6 border-t border-outline-variant/20">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2 opacity-60">
+<div class="w-6 h-6 rounded bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]">account_balance_wallet</span>
+</div>
+<span class="text-sm font-bold font-headline">Ethereal Vault</span>
+</div>
+<p class="text-xs text-on-surface-variant opacity-60">© 2024 Ethereal Vault. All rights reserved.</p>
+<div class="flex gap-6 text-xs font-medium text-on-surface-variant">
+<a class="hover:text-primary" href="#">Privacy</a>
+<a class="hover:text-primary" href="#">Terms</a>
+</div>
+</div>
+</footer>
+<!-- Background Accents -->
+<div class="fixed top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary-fixed/5 rounded-full blur-[100px] pointer-events-none -z-20"></div>
+<div class="fixed bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-secondary-fixed/5 rounded-full blur-[100px] pointer-events-none -z-20"></div>
+</body></html>
