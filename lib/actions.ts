@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { getAppUrl } from "@/lib/app-url";
 import { ensureUserSetup } from "@/lib/db";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -31,7 +32,7 @@ export async function authAction(_: AuthState, formData: FormData): Promise<Auth
       email,
       password,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/vault`
+        emailRedirectTo: `${getAppUrl()}/vault`
       }
     });
 

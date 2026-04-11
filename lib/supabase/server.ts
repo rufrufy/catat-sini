@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
 
-import { env, hasSupabaseEnv } from "@/lib/env";
+import { getSupabaseAnonKey, getSupabaseUrl, hasSupabaseEnv } from "@/lib/env";
 
 type CookieMutation = {
   name: string;
@@ -12,12 +12,14 @@ type CookieMutation = {
 
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
+  const supabaseUrl = getSupabaseUrl();
+  const supabaseAnonKey = getSupabaseAnonKey();
 
-  if (!hasSupabaseEnv()) {
+  if (!hasSupabaseEnv() || !supabaseUrl || !supabaseAnonKey) {
     return null;
   }
 
-  return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL!, env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-import { env, hasSupabaseEnv } from "@/lib/env";
+import { getSupabaseAnonKey, getSupabaseUrl, hasSupabaseEnv } from "@/lib/env";
 
 type CookieMutation = {
   name: string;
@@ -10,7 +10,10 @@ type CookieMutation = {
 };
 
 export async function updateSession(request: NextRequest) {
-  if (!hasSupabaseEnv()) {
+  const supabaseUrl = getSupabaseUrl();
+  const supabaseAnonKey = getSupabaseAnonKey();
+
+  if (!hasSupabaseEnv() || !supabaseUrl || !supabaseAnonKey) {
     return NextResponse.next({ request });
   }
 
@@ -18,7 +21,7 @@ export async function updateSession(request: NextRequest) {
     request
   });
 
-  const supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL!, env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
