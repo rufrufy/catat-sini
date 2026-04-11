@@ -103,6 +103,36 @@ alter table public.transactions add column if not exists wallet_id uuid referenc
 create unique index if not exists accounts_wallet_name_idx on public.accounts(wallet_id, name);
 create unique index if not exists categories_wallet_name_idx on public.categories(wallet_id, name);
 
+create or replace function public.is_wallet_member(target_wallet_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.wallet_members wm
+    where wm.wallet_id = target_wallet_id
+      and wm.user_id = auth.uid()
+  );
+$$;
+
+create or replace function public.is_wallet_owner(target_wallet_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.wallets w
+    where w.id = target_wallet_id
+      and w.owner_user_id = auth.uid()
+  );
+$$;
+
 alter table public.profiles enable row level security;
 alter table public.wallets enable row level security;
 alter table public.wallet_members enable row level security;
@@ -137,33 +167,19 @@ with check (auth.uid() = id);
 create policy "wallets visible to members"
 on public.wallets for all
 using (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = wallets.id
-      and wm.user_id = auth.uid()
-  )
+  owner_user_id = auth.uid()
+  or public.is_wallet_member(id)
 )
 with check (
   owner_user_id = auth.uid()
-  or exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = wallets.id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-  )
+  or public.is_wallet_owner(id)
 );
 
 create policy "wallet members select"
 on public.wallet_members for select
 using (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = wallet_members.wallet_id
-      and wm.user_id = auth.uid()
-  )
+  user_id = auth.uid()
+  or public.is_wallet_member(wallet_id)
 );
 
 create policy "wallet members insert"
@@ -173,54 +189,25 @@ with check (
     auth.uid() = user_id
     and role = 'owner'
     and invited_by_user_id = auth.uid()
-    and exists (
-      select 1
-      from public.wallets w
-      where w.id = wallet_members.wallet_id
-        and w.owner_user_id = auth.uid()
-    )
+    and public.is_wallet_owner(wallet_id)
   )
   or
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = wallet_members.wallet_id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-  )
+  public.is_wallet_owner(wallet_id)
 );
 
 create policy "wallet members update"
 on public.wallet_members for update
 using (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = wallet_members.wallet_id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-  )
+  public.is_wallet_owner(wallet_id)
 )
 with check (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = wallet_members.wallet_id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-  )
+  public.is_wallet_owner(wallet_id)
 );
 
 create policy "wallet members delete"
 on public.wallet_members for delete
 using (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = wallet_members.wallet_id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-  )
+  public.is_wallet_owner(wallet_id)
 );
 
 create policy "wallet invites select"
@@ -234,6 +221,7 @@ create policy "wallet invites insert"
 on public.wallet_invites for insert
 with check (
   invited_by_user_id = auth.uid()
+  and public.is_wallet_owner(wallet_id)
 );
 
 create policy "wallet invites update"
@@ -256,58 +244,28 @@ using (
 create policy "accounts own rows"
 on public.accounts for all
 using (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = accounts.wallet_id
-      and wm.user_id = auth.uid()
-  )
+  public.is_wallet_member(wallet_id)
 )
 with check (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = accounts.wallet_id
-      and wm.user_id = auth.uid()
-  )
+  public.is_wallet_member(wallet_id)
 );
 
 create policy "categories own rows"
 on public.categories for all
 using (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = categories.wallet_id
-      and wm.user_id = auth.uid()
-  )
+  public.is_wallet_member(wallet_id)
 )
 with check (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = categories.wallet_id
-      and wm.user_id = auth.uid()
-  )
+  public.is_wallet_member(wallet_id)
 );
 
 create policy "transactions own rows"
 on public.transactions for all
 using (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = transactions.wallet_id
-      and wm.user_id = auth.uid()
-  )
+  public.is_wallet_member(wallet_id)
 )
 with check (
-  exists (
-    select 1
-    from public.wallet_members wm
-    where wm.wallet_id = transactions.wallet_id
-      and wm.user_id = auth.uid()
-  )
+  public.is_wallet_member(wallet_id)
 );
 
 create policy "attachments own rows"

@@ -123,6 +123,28 @@ export function TransactionComposer({
   const manualAccounts = useMemo(() => accounts.filter((item) => item.walletId === manualDraft.walletId), [accounts, manualDraft.walletId]);
   const manualQuickCategories = useMemo(() => manualCategories.slice(0, 6), [manualCategories]);
 
+  if (wallets.length === 0) {
+    return (
+      <section className="rounded-[2rem] bg-surface-container-lowest p-6 shadow-sm">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-surface-container text-primary">
+          <AppIcon className="h-7 w-7" name="wallet" />
+        </div>
+        <div className="mt-5 text-center">
+          <h2 className="font-headline text-2xl font-bold text-on-surface">Belum ada dompet</h2>
+          <p className="mt-3 text-sm leading-6 text-on-surface-variant">
+            Buat dompet dulu di halaman Account supaya transaksi manual maupun AI punya tempat penyimpanan yang jelas.
+          </p>
+        </div>
+        <a
+          className="mt-6 flex h-12 w-full items-center justify-center rounded-2xl bg-brand-gradient text-sm font-bold text-on-primary shadow-veil"
+          href="/account"
+        >
+          Buka Manajemen Dompet
+        </a>
+      </section>
+    );
+  }
+
   async function requestDraftExtraction(targetMode: DraftInputMode, content: string, uploadedImageDataUrl?: string | null) {
     setIsExtracting(true);
     setStatus(null);
@@ -392,7 +414,7 @@ export function TransactionComposer({
           {hasGeneratedDraft ? (
             <section className="rounded-[2.4rem] bg-surface-container-lowest p-6 shadow-sm">
               <div className="mb-6 flex items-start justify-between gap-4">
-                <h2 className="font-headline text-4xl font-bold leading-tight text-on-surface">Review Draft</h2>
+                <h2 className="font-headline text-3xl font-bold leading-tight text-on-surface">Review Draft</h2>
                 <div className="flex rounded-2xl bg-surface-container p-1">
                   {(["expense", "income"] as TransactionType[]).map((item) => (
                     <button
@@ -422,13 +444,13 @@ export function TransactionComposer({
 
               <div className="py-4 text-center">
                 <p className="text-sm uppercase tracking-[0.28em] text-on-surface-variant">Total Amount</p>
-                <p className="mt-3 font-headline text-6xl font-extrabold tracking-tight text-on-surface">{formattedAmount}</p>
+                <p className="mt-3 font-headline text-5xl font-extrabold tracking-tight text-on-surface">{formattedAmount}</p>
               </div>
 
               <div className="space-y-4">
                 <FieldCard icon="wallet" label="Dompet">
                   <select
-                    className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                    className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                     onChange={(event) => syncDependentFields("ai", event.target.value, draft.type)}
                     value={draft.walletId}
                   >
@@ -441,14 +463,14 @@ export function TransactionComposer({
                 </FieldCard>
                 <FieldCard icon="sparkles" label="Title">
                   <input
-                    className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                    className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                     onChange={(event) => updateDraft("ai", { title: event.target.value })}
                     value={draft.title}
                   />
                 </FieldCard>
                 <FieldCard icon="wallet" label="Amount">
                   <input
-                    className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                    className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                     onChange={(event) => updateDraft("ai", { amount: Number(event.target.value || 0) })}
                     type="number"
                     value={draft.amount}
@@ -456,7 +478,7 @@ export function TransactionComposer({
                 </FieldCard>
                 <FieldCard icon="coffee" label="Category">
                   <select
-                    className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                    className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                     onChange={(event) => {
                       const nextCategory = aiCategories.find((item) => item.id === event.target.value);
                       updateDraft("ai", {
@@ -471,7 +493,7 @@ export function TransactionComposer({
                 </FieldCard>
                 <FieldCard icon="briefcase" label="Payment Account">
                   <select
-                    className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                    className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                     onChange={(event) => {
                       const nextAccount = aiAccounts.find((item) => item.id === event.target.value);
                       updateDraft("ai", {
@@ -490,7 +512,7 @@ export function TransactionComposer({
                 </FieldCard>
                 <FieldCard icon="chart" label="Transaction Date">
                   <input
-                    className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                    className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                     onChange={(event) => updateDraft("ai", { occurredAt: new Date(event.target.value).toISOString() })}
                     type="datetime-local"
                     value={datetimeLocalValue(draft.occurredAt)}
@@ -498,7 +520,7 @@ export function TransactionComposer({
                 </FieldCard>
                 <FieldCard icon="receipt" label="Notes">
                   <textarea
-                    className="min-h-20 w-full resize-none bg-transparent text-lg text-on-surface outline-none"
+                    className="min-h-20 w-full resize-none bg-transparent text-base text-on-surface outline-none"
                     onChange={(event) => updateDraft("ai", { notes: event.target.value })}
                     placeholder="Tambahkan catatan kalau perlu"
                     value={draft.notes}
@@ -532,7 +554,7 @@ export function TransactionComposer({
       ) : (
         <section className="rounded-[2.4rem] bg-surface-container-lowest p-6 shadow-sm">
           <div className="mb-6 flex items-start justify-between gap-4">
-            <h2 className="font-headline text-4xl font-bold leading-tight text-on-surface">New Transaction</h2>
+            <h2 className="font-headline text-3xl font-bold leading-tight text-on-surface">New Transaction</h2>
             <div className="flex rounded-2xl bg-surface-container p-1">
               {(["expense", "income"] as TransactionType[]).map((item) => (
                 <button
@@ -562,7 +584,7 @@ export function TransactionComposer({
           <div className="py-4 text-center">
             <p className="text-sm uppercase tracking-[0.28em] text-on-surface-variant">Total Amount</p>
             <input
-              className="mt-3 w-full bg-transparent text-center font-headline text-6xl font-extrabold tracking-tight text-on-surface outline-none"
+              className="mt-3 w-full bg-transparent text-center font-headline text-5xl font-extrabold tracking-tight text-on-surface outline-none sm:text-6xl"
               onChange={(event) => updateDraft("manual", { amount: Number(event.target.value || 0) })}
               type="number"
               value={manualDraft.amount}
@@ -572,7 +594,7 @@ export function TransactionComposer({
           <div className="space-y-5">
             <FieldCard icon="wallet" label="Dompet">
               <select
-                className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                 onChange={(event) => syncDependentFields("manual", event.target.value, manualDraft.type)}
                 value={manualDraft.walletId}
               >
@@ -591,7 +613,7 @@ export function TransactionComposer({
                   <button
                     key={category.id}
                     className={cn(
-                      "rounded-[24px] px-3 py-4 text-center text-sm font-semibold shadow-sm transition",
+                      "rounded-[20px] px-2 py-3 text-center text-xs font-semibold leading-5 shadow-sm transition",
                       manualDraft.categoryId === category.id ? "bg-brand-gradient text-on-primary shadow-veil" : "bg-surface-container text-on-surface"
                     )}
                     onClick={() =>
@@ -613,7 +635,7 @@ export function TransactionComposer({
 
             <FieldCard icon="coffee" label="Semua Kategori">
               <select
-                className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                 onChange={(event) => {
                   const nextCategory = manualCategories.find((item) => item.id === event.target.value);
                   updateDraft("manual", {
@@ -629,14 +651,14 @@ export function TransactionComposer({
 
             <FieldCard icon="sparkles" label="Title">
               <input
-                className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                 onChange={(event) => updateDraft("manual", { title: event.target.value })}
                 value={manualDraft.title}
               />
             </FieldCard>
             <FieldCard icon="chart" label="Transaction Date">
               <input
-                className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                 onChange={(event) => updateDraft("manual", { occurredAt: new Date(event.target.value).toISOString() })}
                 type="datetime-local"
                 value={datetimeLocalValue(manualDraft.occurredAt)}
@@ -644,7 +666,7 @@ export function TransactionComposer({
             </FieldCard>
             <FieldCard icon="briefcase" label="Payment Account">
               <select
-                className="w-full bg-transparent text-xl font-semibold text-on-surface outline-none"
+                className="w-full bg-transparent text-lg font-semibold text-on-surface outline-none"
                 onChange={(event) => {
                   const nextAccount = manualAccounts.find((item) => item.id === event.target.value);
                   updateDraft("manual", {
@@ -663,7 +685,7 @@ export function TransactionComposer({
             </FieldCard>
             <FieldCard icon="receipt" label="Optional Notes">
               <textarea
-                className="min-h-24 w-full resize-none bg-transparent text-lg text-on-surface outline-none"
+                className="min-h-24 w-full resize-none bg-transparent text-base text-on-surface outline-none"
                 onChange={(event) => updateDraft("manual", { notes: event.target.value })}
                 placeholder="What was this for?"
                 value={manualDraft.notes}

@@ -32,7 +32,7 @@ export function MobileShell({
             {initial}
           </div>
           <div>
-            <p className="font-headline text-[2rem] font-extrabold tracking-tight text-primary">CatatSini</p>
+            <p className="font-headline text-[1.45rem] font-extrabold tracking-tight text-primary sm:text-[1.6rem]">CatatSini</p>
             <p className="-mt-1 text-xs uppercase tracking-[0.32em] text-on-surface-variant">Financial Intelligence</p>
           </div>
         </div>
